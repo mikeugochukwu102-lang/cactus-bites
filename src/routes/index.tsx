@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import heroLagoon from "@/assets/hero-lagoon.jpg";
 import interior from "@/assets/interior.jpg";
+import { GallerySection } from "@/components/GallerySection";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -44,6 +45,7 @@ function Index() {
         <div className="hidden md:flex gap-8 text-xs uppercase tracking-[0.2em] font-medium">
           <a href="#about" className="hover:text-gold transition-colors">The View</a>
           <a href="#menu" className="hover:text-gold transition-colors">Menu</a>
+          <a href="#gallery" className="hover:text-gold transition-colors">Gallery</a>
           <a href="#reviews" className="hover:text-gold transition-colors">Reviews</a>
           <a href="#contact" className="hover:text-gold transition-colors">Contact</a>
         </div>
@@ -173,6 +175,8 @@ function Index() {
           ))}
         </div>
       </section>
+
+      <GallerySection />
 
       {/* Contact */}
       <section id="contact" className="bg-cactus/[0.03] py-24 md:py-32 px-6 md:px-10 border-t border-cactus/10">
