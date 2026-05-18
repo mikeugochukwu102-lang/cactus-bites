@@ -311,17 +311,29 @@ function AdminPanel() {
             ))}
           </ul>
         )}
-        <button
-          type="submit"
-          disabled={uploading || files.length === 0}
-          className="bg-cactus text-sand px-6 py-2 text-[11px] uppercase tracking-[0.3em] font-bold disabled:opacity-50"
-        >
-          {uploading
-            ? "Uploading…"
-            : files.length > 1
-              ? `Upload ${files.length} photos`
-              : "Upload"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={uploading || files.length === 0}
+            className="bg-cactus text-sand px-6 py-2 text-[11px] uppercase tracking-[0.3em] font-bold disabled:opacity-50"
+          >
+            {uploading
+              ? "Uploading…"
+              : files.length > 1
+                ? `Upload ${files.length} photos`
+                : "Upload"}
+          </button>
+          {progress.some((p) => p.status === "error") && (
+            <button
+              type="button"
+              onClick={retry}
+              disabled={uploading}
+              className="border border-cactus/30 text-cactus px-4 py-2 text-[11px] uppercase tracking-[0.3em] font-bold disabled:opacity-50"
+            >
+              Retry failed
+            </button>
+          )}
+        </div>
       </form>
 
       <section>
