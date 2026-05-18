@@ -240,6 +240,18 @@ function AdminPanel() {
     load();
   };
 
+  const retry = async () => {
+    if (files.length === 0) return;
+    const retryFiles = files.filter((_, i) => progress[i]?.status === "error");
+    if (retryFiles.length === 0) return;
+    setFiles(retryFiles);
+    setProgress(retryFiles.map((f) => ({ name: f.name, status: "pending" })));
+    // Re-use the same upload logic by submitting the form programmatically
+    // But we need to call upload directly to avoid form re-validation
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+    await upload(fakeEvent);
+  };
+
   const remove = async (p: Photo) => {
     if (!confirm("Delete this photo?")) return;
     const { error } = await supabase.from("gallery_photos").delete().eq("id", p.id);
@@ -299,17 +311,29 @@ function AdminPanel() {
             ))}
           </ul>
         )}
-        <button
-          type="submit"
-          disabled={uploading || files.length === 0}
-          className="bg-cactus text-sand px-6 py-2 text-[11px] uppercase tracking-[0.3em] font-bold disabled:opacity-50"
-        >
-          {uploading
-            ? "Uploading…"
-            : files.length > 1
-              ? `Upload ${files.length} photos`
-              : "Upload"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={uploading || files.length === 0}
+            className="bg-cactus text-sand px-6 py-2 text-[11px] uppercase tracking-[0.3em] font-bold disabled:opacity-50"
+          >
+            {uploading
+              ? "Uploading…"
+              : files.length > 1
+                ? `Upload ${files.length} photos`
+                : "Upload"}
+          </button>
+          {progress.some((p) => p.status === "error") && (
+            <button
+              type="button"
+              onClick={retry}
+              disabled={uploading}
+              className="border border-cactus/30 text-cactus px-4 py-2 text-[11px] uppercase tracking-[0.3em] font-bold disabled:opacity-50"
+            >
+              Retry failed
+            </button>
+          )}
+        </div>
       </form>
 
       <section>
