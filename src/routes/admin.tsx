@@ -240,6 +240,18 @@ function AdminPanel() {
     load();
   };
 
+  const retry = async () => {
+    if (files.length === 0) return;
+    const retryFiles = files.filter((_, i) => progress[i]?.status === "error");
+    if (retryFiles.length === 0) return;
+    setFiles(retryFiles);
+    setProgress(retryFiles.map((f) => ({ name: f.name, status: "pending" })));
+    // Re-use the same upload logic by submitting the form programmatically
+    // But we need to call upload directly to avoid form re-validation
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+    await upload(fakeEvent);
+  };
+
   const remove = async (p: Photo) => {
     if (!confirm("Delete this photo?")) return;
     const { error } = await supabase.from("gallery_photos").delete().eq("id", p.id);
